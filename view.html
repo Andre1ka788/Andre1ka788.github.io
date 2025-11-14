@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Просмотр скриншота — ScreenshotShare</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .view-container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 30px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    
+    .view-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .view-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #645959;
+    }
+    
+    .view-subtitle {
+      color: var(--muted);
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    
+    .view-image {
+      text-align: center;
+      margin: 24px 0;
+    }
+    
+    .view-image img {
+      max-width: 100%;
+      max-height: 600px;
+      border-radius: 8px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
+    
+    .view-meta {
+      color: var(--muted);
+      margin: 20px 0;
+      font-size: 14px;
+      text-align: center;
+    }
+    
+    .view-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    .error-message {
+      text-align: center;
+      color: #ff4444;
+      padding: 40px;
+      font-size: 18px;
+    }
+
+    /* Стили для синей кнопки */
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-block;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+      color: white;
+      text-decoration: none;
+    }
+
+    /* Адаптивность для мобильных устройств */
+    @media (max-width: 768px) {
+      .view-container {
+        margin: 20px auto;
+        padding: 20px;
+      }
+      
+      .view-title {
+        font-size: 20px;
+        text-align: center;
+      }
+      
+      .view-image {
+        margin: 20px 0;
+      }
+      
+      .view-image img {
+        max-height: 50vh;
+      }
+      
+      .view-meta {
+        font-size: 13px;
+        margin: 16px 0;
+      }
+      
+      .view-actions {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      
+      .view-actions .btn,
+      .view-actions .btn-primary {
+        width: 100%;
+        max-width: 200px;
+        text-align: center;
+        justify-content: center;
+      }
+      
+      .error-message {
+        padding: 30px 20px;
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .view-container {
+        margin: 10px auto;
+        padding: 16px;
+        border-radius: 8px;
+      }
+      
+      .view-title {
+        font-size: 18px;
+      }
+      
+      .view-image img {
+        max-height: 40vh;
+      }
+      
+      .view-meta {
+        font-size: 12px;
+      }
+      
+      .view-actions .btn,
+      .view-actions .btn-primary {
+        max-width: 100%;
+        padding: 12px 16px;
+      }
+    }
+
+    /* Ландшафтная ориентация для мобилок */
+    @media (max-width: 768px) and (orientation: landscape) {
+      .view-image img {
+        max-height: 60vh;
+      }
+      
+      .view-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      
+      .view-actions .btn,
+      .view-actions .btn-primary {
+        flex: 1;
+        min-width: 140px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <img src="images/icon.jpg" alt="" class="logo-icon">
+        Скриншоты
+      </div>
+      <nav>
+        <a href="index.html" class="btn btn-outline">На главную</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="view-container">
+      <h2 class="view-title">Просмотр скриншота</h2>
+      
+      <div id="view-area" class="view-image">
+        <!-- изображение будет здесь -->
+      </div>
+      
+      <div id="view-meta" class="view-meta"></div>
+      
+      <div id="view-actions" class="view-actions">
+        <!-- кнопки действий будут здесь -->
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© 2025 Скриншоты</div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      function getScreenshots() {
+        try { 
+          const raw = localStorage.getItem('ss_screenshots'); 
+          return raw ? JSON.parse(raw) : []; 
+        } catch (e) { 
+          return []; 
+        }
+      }
+
+      // Все локальные изображения (должны совпадать с script.js)
+      const localImages = [
+        {
+          id: 'local-1',
+          url: 'images/shot1.jpg',
+          filename: 'shot1.jpg',
+          date: new Date('2025-01-15').toISOString(),
+          private: false
+        },
+        {
+          id: 'local-2', 
+          url: 'images/shot2.jpg',
+          filename: 'shot2.jpg',
+          date: new Date('2025-01-14').toISOString(),
+          private: false
+        },
+        {
+          id: 'local-3',
+          url: 'images/shot3.jpg',
+          filename: 'shot3.jpg',
+          date: new Date('2024-12-20').toISOString(),
+          private: false
+        },
+        {
+          id: 'local-4',
+          url: 'images/shot4.jpg',
+          filename: 'shot4.jpg',
+          date: new Date('2024-12-15').toISOString(),
+          private: false
+        },
+        {
+          id: 'local-5',
+          url: 'images/shot5.jpg',
+          filename: 'shot5.jpg',
+          date: new Date('2024-12-10').toISOString(),
+          private: false
+        },
+        {
+          id: 'local-6',
+          url: 'images/shot6.jpg',
+          filename: 'shot6.jpg',
+          date: new Date('2024-11-05').toISOString(),
+          private: false
+        },
+        {
+          id: 'local-7',
+          url: 'images/shot7.jpg',
+          filename: 'shot7.jpg',
+          date: new Date('2024-10-25').toISOString(),
+          private: false
+        },
+        {
+          id: 'local-8',
+          url: 'images/shot8.jpg',
+          filename: 'shot8.jpg',
+          date: new Date('2024-10-20').toISOString(),
+          private: false
+        }
+      ];
+
+      function findById(id) {
+        console.log('Ищем скриншот с ID:', id);
+        
+        // Сначала ищем в локальных изображениях
+        const local = localImages.find(it => it.id === id);
+        if (local) {
+          console.log('Найден локальный скриншот:', local);
+          return local;
+        }
+        
+        // Затем в сохранённых скриншотах
+        const arr = getScreenshots();
+        const saved = arr.find(it => it.id === id);
+        if (saved) {
+          console.log('Найден сохранённый скриншот:', saved);
+          return saved;
+        }
+        
+        console.log('Скриншот не найден');
+        return null;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      let id = params.get('id');
+
+      console.log('ID из URL:', id);
+
+      // Если id не передан — покажем последний элемент (если есть)
+      if (!id) {
+        const allItems = [...localImages, ...getScreenshots()];
+        if (allItems.length) {
+          id = allItems[allItems.length - 1].id;
+          console.log('Автоматически выбран ID:', id);
+        }
+      }
+
+      const viewArea = document.getElementById('view-area');
+      const viewMeta = document.getElementById('view-meta');
+      const viewActions = document.getElementById('view-actions');
+
+      if (!id) {
+        viewArea.innerHTML = '<div class="error-message">Скриншот не найден. ID не указан.</div>';
+        return;
+      }
+
+      const item = findById(id);
+      if (!item) {
+        viewArea.innerHTML = '<div class="error-message">Скриншот с указанным ID не найден.</div>';
+        return;
+      }
+
+      // Показ изображения
+      const img = document.createElement('img');
+      
+      // Определяем источник изображения
+      if (item.dataUrl && item.dataUrl.startsWith('data:image')) {
+        img.src = item.dataUrl;
+      } else if (item.url) {
+        img.src = item.url;
+      } else {
+        img.src = `https://picsum.photos/seed/${item.id}/800/600`;
+      }
+      
+      img.alt = item.filename || 'Скриншот';
+      img.onerror = function() {
+        this.src = `https://picsum.photos/seed/${item.id}/800/600`;
+      };
+      
+      viewArea.appendChild(img);
+
+      // Мета информация
+      const dateText = new Date(item.date).toLocaleString('ru-RU');
+      let metaText = `Загружено: ${dateText}`;
+      if (item.filename) {
+        metaText += ` • ${item.filename}`;
+      }
+      if (item.private) {
+        metaText += ' • Только по ссылке';
+      }
+      viewMeta.textContent = metaText;
+
+      // Действия
+      const btnDownload = document.createElement('a');
+      btnDownload.className = 'btn btn-outline';
+      btnDownload.textContent = 'Скачать';
+      btnDownload.href = item.dataUrl || item.url;
+      btnDownload.download = item.filename || 'screenshot.png';
+
+      const btnCopy = document.createElement('button');
+      btnCopy.className = 'btn-primary';
+      btnCopy.textContent = 'Скопировать ссылку';
+      btnCopy.addEventListener('click', async () => {
+        const url = window.location.href;
+        try {
+          await navigator.clipboard.writeText(url);
+          alert('Ссылка скопирована в буфер обмена');
+        } catch (e) {
+          // Fallback для браузеров без поддержки clipboard API
+          const textArea = document.createElement('textarea');
+          textArea.value = url;
+          document.body.appendChild(textArea);
+          textArea.select();
+          try {
+            document.execCommand('copy');
+            alert('Ссылка скопирована в буфер обмена');
+          } catch (err) {
+            prompt('Скопируйте ссылку вручную:', url);
+          }
+          document.body.removeChild(textArea);
+        }
+      });
+
+      viewActions.appendChild(btnDownload);
+      viewActions.appendChild(btnCopy);
+
+    })();
+  </script>
+</body>
+</html>

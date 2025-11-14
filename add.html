@@ -1,0 +1,489 @@
+
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Добавить скриншот</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+.upload-container {
+    max-width: 3000px; /* Увеличили ширину контейнера */
+    margin: 40px auto;
+    background: var(--card);
+    border-radius: 12px;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    overflow: hidden;
+    min-height: 600px; /* Минимальная высота всей карточки */
+}
+    
+    .upload-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.02);
+    }
+    
+    .upload-header .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+    
+.upload-area {
+    border: 2px dashed rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 10px 40px; /* Максимальные отступы */
+    text-align: center;
+    margin: 20px 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background: rgba(255,255,255,0.02);
+    min-height: 450px; /* Очень высокая */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1; /* Растягивается на все доступное пространство */
+}
+    
+   .upload-content {
+    padding: 100px; /* Увеличили с 30px до 40px */
+    min-height: 500px; /* Добавили минимальную высоту всей области */
+    display: flex;
+    flex-direction: column;
+    }
+    
+    .upload-title {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #000000;
+    }
+    
+    .upload-subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 50px;
+      font-size: 14px;
+    }
+    
+    .upload-area {
+      border: 2px dashed rgba(255,255,255,0.2);
+      border-radius: 8px;
+      padding: 100px 50px;
+      text-align: center;
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      background: rgba(255,255,255,0.02);
+    }
+    
+    .upload-area:hover {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+    }
+    
+    .upload-area.dragover {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
+    }
+    
+    .upload-text {
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+    
+    .upload-hint {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    
+    .preview-container {
+      margin: 24px 0;
+      text-align: center;
+    }
+    
+    .preview-img {
+      max-width: 100%;
+      max-height: 400px;
+      border-radius: 8px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 30px;
+    }
+    
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    
+    .checkbox input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin: 25px 0;
+    }
+
+    /* Адаптивность для мобильных устройств */
+    @media (max-width: 768px) {
+      .upload-container {
+        margin: 20px auto;
+      }
+      
+      .upload-header {
+        padding: 16px 20px;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      
+      .upload-header .logo {
+        font-size: 20px;
+      }
+      
+      .user-info {
+        text-align: right;
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .upload-content {
+        padding: 20px;
+      }
+      
+      .upload-title {
+        font-size: 18px;
+        text-align: center;
+      }
+      
+      .upload-subtitle {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      
+      .upload-area {
+        padding: 30px 15px;
+        margin-bottom: 20px;
+      }
+      
+      .upload-text {
+        font-size: 14px;
+      }
+      
+      .upload-hint {
+        font-size: 12px;
+      }
+      
+      .preview-img {
+        max-height: 300px;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      
+      .form-actions .btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+      }
+      
+      .checkbox {
+        font-size: 13px;
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .upload-container {
+        margin: 10px auto;
+        border-radius: 8px;
+      }
+      
+      .upload-header {
+        padding: 12px 16px;
+      }
+      
+      .upload-header .logo {
+        font-size: 18px;
+      }
+      
+      .user-info {
+        
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+      }
+      
+      .upload-content {
+        padding: 16px;
+      }
+      
+      .upload-title {
+        font-size: 16px;
+      }
+      
+      .upload-area {
+        padding: 20px 12px;
+      }
+      
+      .preview-img {
+        max-height: 250px;
+      }
+      
+      #logout-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+      }
+    }
+
+    /* Ландшафтная ориентация для мобилок */
+    @media (max-width: 768px) and (orientation: landscape) {
+      .upload-area {
+        padding: 20px 15px;
+      }
+      
+      .preview-img {
+        max-height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <img src="images/icon.jpg" alt="" class="logo-icon">
+        Скриншот</span>
+      </div>
+            <div class="upload-header">
+        <div class="user-info">
+          <span id="user-greeting">Здравствуйте!</span>
+          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;" id="logout-btn">Выход</button>
+        </div>
+  </header>
+
+  <main class="container">
+    <div class="upload-container">
+      <!-- Шапка как на скриншоте -->
+
+      <div class="upload-content">
+        
+        <!-- Область загрузки -->
+        <div class="upload-area" id="dropzone">
+        <h2 class="upload-title">Загрузите фотографию</h2>
+        <p class="upload-subtitle">(допустимый формат - jpg, максимальный размер - 3 Мб)</p>
+          <input type="file" id="fileInput" accept="image/jpeg,image/png" hidden />
+        </div>
+
+        <!-- Превью -->
+        <div id="preview" class="preview-container hidden">
+          <img id="preview-img" src="" alt="Предпросмотр" class="preview-img" />
+          <div style="margin-top: 12px;">
+            <button type="button" class="btn btn-outline" id="removeFile">Удалить</button>
+          </div>
+        </div>
+
+        <!-- Разделитель -->
+        <div class="divider"></div>
+
+
+        
+        <!-- Кнопки действий -->
+<div class="form-actions">
+  <button type="button" class="btn btn-primary" id="publishBtn" disabled>Опубликовать скриншот</button>
+          <!-- Настройки -->
+        <label class="checkbox">
+          <input type="checkbox" id="privateCheck" />
+          Доступен только по прямой ссылке
+        </label>
+</div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© 2025 Скриншоты</div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      // Функции авторизации
+      function getCurrentUser() {
+        try {
+          const user = localStorage.getItem('ss_current_user');
+          return user ? JSON.parse(user) : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function logout() {
+        localStorage.removeItem('ss_current_user');
+        window.location.href = 'index.html';
+      }
+
+      // Проверка авторизации
+      const currentUser = getCurrentUser();
+      const userGreeting = document.getElementById('user-greeting');
+      const logoutBtn = document.getElementById('logout-btn');
+
+      if (currentUser) {
+        userGreeting.textContent = `Здравствуйте, ${currentUser.username}`;
+      } else {
+        // Если пользователь не авторизован, перенаправляем на главную
+        window.location.href = 'index.html';
+      }
+
+      // Обработчик кнопки выхода
+      logoutBtn.addEventListener('click', logout);
+
+      // Код загрузки файлов
+      const fileInput = document.getElementById('fileInput');
+      const dropzone = document.getElementById('dropzone');
+      const preview = document.getElementById('preview');
+      const previewImg = document.getElementById('preview-img');
+      const removeFile = document.getElementById('removeFile');
+      const publishBtn = document.getElementById('publishBtn');
+      const privateCheck = document.getElementById('privateCheck');
+
+      let selectedFile = null;
+      let selectedDataUrl = null;
+      const MAX_SIZE = 3 * 1024 * 1024; // 3MB
+
+      // Клик по области загрузки
+      dropzone.addEventListener('click', () => fileInput.click());
+
+      // Drag & Drop
+      ['dragenter','dragover'].forEach(ev => {
+        dropzone.addEventListener(ev, e => { 
+          e.preventDefault(); 
+          dropzone.classList.add('dragover'); 
+        });
+      });
+      
+      ['dragleave','drop'].forEach(ev => {
+        dropzone.addEventListener(ev, e => { 
+          e.preventDefault(); 
+          dropzone.classList.remove('dragover'); 
+        });
+      });
+
+      dropzone.addEventListener('drop', e => {
+        const file = e.dataTransfer.files[0];
+        handleFile(file);
+      });
+
+      fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+
+      function handleFile(file) {
+        if (!file) return;
+        if (!file.type.match(/(jpeg|jpg|png)/)) {
+          alert('Можно загружать только изображения (jpg, png)');
+          return;
+        }
+        if (file.size > MAX_SIZE) {
+          alert('Файл слишком большой. Максимум 3 МБ.');
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = () => {
+          selectedDataUrl = reader.result;
+          previewImg.src = selectedDataUrl;
+          preview.classList.remove('hidden');
+          dropzone.classList.add('hidden');
+          selectedFile = file;
+          publishBtn.disabled = false;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      removeFile.addEventListener('click', () => {
+        selectedFile = null;
+        selectedDataUrl = null;
+        preview.classList.add('hidden');
+        dropzone.classList.remove('hidden');
+        fileInput.value = '';
+        publishBtn.disabled = true;
+      });
+
+      // Функции для работы с localStorage
+      function getScreenshots() {
+        try {
+          const raw = localStorage.getItem('ss_screenshots');
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) { return []; }
+      }
+      
+      function saveScreenshots(arr) {
+        try { 
+          localStorage.setItem('ss_screenshots', JSON.stringify(arr)); 
+        } catch (e) { 
+          console.error(e); 
+          alert('Не получилось сохранить — localStorage недоступен'); 
+        }
+      }
+      
+      function generateId() {
+        return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,9);
+      }
+
+// Публикация скриншота
+publishBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!selectedDataUrl) {
+        alert('Выберите изображение перед загрузкой.');
+        return;
+    }
+    
+    const id = 'upload-' + Date.now().toString(36); // Добавляем префикс
+    const item = {
+        id,
+        dataUrl: selectedDataUrl,
+        filename: selectedFile ? selectedFile.name : 'image.png',
+        date: new Date().toISOString(),
+        private: !!privateCheck.checked,
+        userId: currentUser.id
+    };
+    
+    const arr = getScreenshots();
+    arr.push(item);
+    saveScreenshots(arr);
+    
+    // Редирект на view.html с id
+    window.location.href = `view.html?id=${encodeURIComponent(id)}`;
+});
+
+    })();
+  </script>
+</body>
+</html>

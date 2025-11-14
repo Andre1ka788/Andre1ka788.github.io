@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Скриншоты — Главная</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <div class="logo">
+            <img src="images/icon.jpg" alt="" class="logo-icon">
+            Скриншоты
+        </div>
+        <nav>
+            <button id="btn-register" class="btn btn-ghost">Регистрация</button>
+            <button id="btn-login" class="btn">Вход</button>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <!-- Кнопка добавить под шапкой -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+        <h1 class="page-title"> </h1>
+        <a id="btn-add" class="btn btn-primary" href="add.html">+Добавить скриншот</a>
+    </div>
+
+    <section id="gallery" class="gallery"></section>
+    <div class="more-wrap">
+        <button id="load-more" class="btn btn-outline">Показать ещё</button>
+    </div>
+</main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© 2025 Скриншоты</div>
+      <div class="socials">
+        <a href="#">vk</a>
+        <a href="#">tg</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Шаблон карточки -->
+  <template id="card-template">
+    <article class="card">
+      <a class="card-thumb" href="#">
+        <img src="" alt="screenshot" />
+      </a>
+      <div class="card-meta">
+        <time class="card-date"></time>
+      </div>
+    </article>
+  </template>
+
+  <!-- Модалка входа / регистрации -->
+<div id="modal" class="modal" aria-hidden="true">
+  <div id="modal-backdrop" class="modal-backdrop"></div>
+  <div class="modal-content">
+    <button id="modal-close" class="modal-close">×</button>
+    <div class="modal-body">
+      <div class="modal-tabs">
+         <button class="tab" data-tab="register">Регистрация</button>
+         <button class="tab active" data-tab="login">Авторизация</button>
+      </div>
+
+<!-- Форма ВХОДА -->
+<form id="form-login" class="form visible">
+  <div class="form-row">
+    <div class="input-group">
+      <input type="email" name="email" required placeholder="Email" />
+    </div>
+    
+    <div class="input-group">
+      <input type="password" name="password" required minlength="6" placeholder="Пароль" />
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Войти</button>
+  </div>
+
+    <div class="form-note">
+    Все поля обязательны для заполнения
+    </div>
+</form>
+
+<!-- Форма РЕГИСТРАЦИИ -->
+<form id="form-register" class="form">
+  <div class="form-row">
+    <div class="input-group">
+      <input type="text" name="username" required pattern="[A-Za-zА-Яа-яЁё0-9_\- ]+" placeholder="Ваше имя" />
+    </div>
+    
+    <div class="input-group">
+      <input type="email" name="email" required placeholder="Email" />
+    </div>
+  </div>
+  
+  <div class="form-row">
+    <div class="input-group">
+      <input type="tel" name="phone" required pattern="^\+?[0-9\s\-\(\)]{10,15}$" placeholder="Мобильный телефон" />
+    </div>
+    
+    <div class="input-group">
+      <input type="password" name="password" required minlength="6" placeholder="Пароль" />
+    </div>
+  </div>
+  
+  <div class="form-row">
+    <div class="input-group">
+      <input type="password" name="confirm" required minlength="6" placeholder="Повторите пароль" />
+    </div>
+  </div>
+
+  <div class="checkbox-group">
+    <input type="checkbox" name="consent" id="consent-checkbox" required />
+    <label for="consent-checkbox">Согласен на обработку персональных данных</label>
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+  </div>
+  <div class="form-note">
+    Все поля обязательны для заполнения
+  </div>
+</form>
+  <script src="script.js"></script>
+</body>
+</html>
