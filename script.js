@@ -25,14 +25,31 @@ function updateHeaderAuth() {
     const currentUser = getCurrentUser();
     const btnLogin = document.getElementById('btn-login');
     const btnRegister = document.getElementById('btn-register');
-    const btnAdd = document.getElementById('btn-add');
+    const nav = document.querySelector('nav');
 
     if (currentUser) {
-        // Пользователь авторизован
+        // Пользователь авторизован - показываем приветствие и кнопку выхода
         if (btnLogin) btnLogin.style.display = 'none';
         if (btnRegister) btnRegister.style.display = 'none';
+        
+        // Создаем элементы для авторизованного пользователя
+        if (nav) {
+            nav.innerHTML = `
+                <span style="color: #000000; margin-right: 12px;">Здравствуйте, ${currentUser.username}!</span>
+                <button class="btn btn-outline2" id="logout-header-btn" style="padding: 6px 12px; font-size: 12px;">Выход</button>
+            `;
+            
+            // Добавляем обработчик для кнопки выхода
+            const logoutBtn = document.getElementById('logout-header-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
+        }
+        
+        // Обновляем кнопку добавления скриншота
+        const btnAdd = document.getElementById('btn-add');
         if (btnAdd) {
-            btnAdd.textContent = '+Добавить скриншот';
+            btnAdd.innerHTML = '<span class="btn-text">+ Добавить скриншот</span>';
             btnAdd.onclick = (e) => {
                 e.preventDefault();
                 window.location.href = 'add.html';
@@ -42,15 +59,76 @@ function updateHeaderAuth() {
         // Пользователь не авторизован
         if (btnLogin) btnLogin.style.display = 'inline-block';
         if (btnRegister) btnRegister.style.display = 'inline-block';
+        
+        // Восстанавливаем исходную навигацию
+        if (nav) {
+            nav.innerHTML = `
+                <button id="btn-register" class="btn btn-ghost">Регистрация</button>
+                <button id="btn-login" class="btn">Вход</button>
+            `;
+            
+            // Добавляем обработчики для восстановленных кнопок
+            const restoredBtnLogin = document.getElementById('btn-login');
+            const restoredBtnRegister = document.getElementById('btn-register');
+            
+            if (restoredBtnLogin) {
+                restoredBtnLogin.addEventListener('click', () => openModal('login'));
+            }
+            if (restoredBtnRegister) {
+                restoredBtnRegister.addEventListener('click', () => openModal('register'));
+            }
+        }
+        
+        const btnAdd = document.getElementById('btn-add');
         if (btnAdd) {
-            btnAdd.textContent = '+Добавить скриншот';
+            btnAdd.innerHTML = '<span class="btn-text">+ Добавить скриншот</span>';
             btnAdd.onclick = (e) => {
                 e.preventDefault();
                 openModal('login');
             };
         }
     }
+    
+    // Принудительно применяем адаптацию для маленьких экранов
+    applyMobileAdaptation();
 }
+
+// Функция выхода
+function logout() {
+    localStorage.removeItem('ss_current_user');
+    window.location.reload(); // Перезагружаем страницу чтобы обновить интерфейс
+}
+
+// Новая функция для адаптации на маленьких экранах
+function applyMobileAdaptation() {
+    const btnAdd = document.getElementById('btn-add');
+    if (!btnAdd) return;
+    
+    // Проверяем ширину экрана
+    if (window.innerWidth <= 400) {
+        // На маленьких экранах скрываем текст и оставляем только +
+        const btnText = btnAdd.querySelector('.btn-text');
+        if (btnText) {
+            btnText.style.display = 'none';
+        }
+        // Убедимся, что плюс виден
+        if (!btnAdd.textContent.includes('+')) {
+            btnAdd.textContent = '+' + btnAdd.textContent;
+        }
+    } else {
+        // На больших экранах показываем полный текст
+        const btnText = btnAdd.querySelector('.btn-text');
+        if (btnText) {
+            btnText.style.display = 'inline';
+        }
+    }
+}
+
+// Вызываем при загрузке и изменении размера окна
+document.addEventListener('DOMContentLoaded', function() {
+    applyMobileAdaptation();
+    window.addEventListener('resize', applyMobileAdaptation);
+});
 
 // Функции для работы со скриншотами
 function getScreenshots() {
@@ -112,12 +190,24 @@ function formatMonthHeader(monthKey) {
     const monthName = monthNames[date.getMonth()];
     return `${monthName}, ${date.getFullYear()}`;
 }
-
 // Функция для получения пагинированных данных
 function getPaginatedScreenshots(allImages, page, itemsPerPage) {
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     return allImages.slice(0, endIndex);
+}
+
+// Функция для обновления отображения всех дат при изменении размера окна
+function updateAllDatesOnResize() {
+    const cards = document.querySelectorAll('.card-date');
+    cards.forEach(cardDate => {
+        // Можно обновить даты если они хранятся в data-атрибутах
+        const dateString = cardDate.getAttribute('data-original-date');
+        if (dateString) {
+            const date = new Date(dateString);
+            cardDate.textContent = formatDateForCard(date);
+        }
+    });
 }
 
 function renderCards() {
@@ -129,62 +219,62 @@ function renderCards() {
 
     gallery.innerHTML = '';
 
-    // Массив с локальными изображениями (разные месяцы)
+    // Массив с локальными изображениями
     const localImages = [
         {
             id: 'local-1',
             url: 'images/shot1.jpg',
             filename: 'shot1.jpg',
-            date: new Date('2025-01-15').toISOString(), // Январь
+            date: new Date('2025-01-15').toISOString(),
             private: false
         },
         {
             id: 'local-2', 
             url: 'images/shot2.jpg',
             filename: 'shot2.jpg',
-            date: new Date('2025-01-14').toISOString(), // Январь
+            date: new Date('2025-01-14').toISOString(),
             private: false
         },
         {
             id: 'local-3',
             url: 'images/shot3.jpg',
             filename: 'shot3.jpg',
-            date: new Date('2024-12-20').toISOString(), // Декабрь
+            date: new Date('2024-12-20').toISOString(),
             private: false
         },
         {
             id: 'local-4',
             url: 'images/shot4.jpg',
             filename: 'shot4.jpg',
-            date: new Date('2024-12-15').toISOString(), // Декабрь
+            date: new Date('2024-12-15').toISOString(),
             private: false
         },
         {
             id: 'local-5',
             url: 'images/shot5.jpg',
             filename: 'shot5.jpg',
-            date: new Date('2024-12-10').toISOString(), // Декабрь
+            date: new Date('2024-12-10').toISOString(),
             private: false
         },
         {
             id: 'local-6',
             url: 'images/shot6.jpg',
             filename: 'shot6.jpg',
-            date: new Date('2024-11-05').toISOString(), // Ноябрь
+            date: new Date('2024-11-05').toISOString(),
             private: false
         },
         {
             id: 'local-7',
             url: 'images/shot7.jpg',
             filename: 'shot7.jpg',
-            date: new Date('2024-10-25').toISOString(), // Октябрь
+            date: new Date('2024-10-25').toISOString(),
             private: false
         },
         {
             id: 'local-8',
             url: 'images/shot8.jpg',
             filename: 'shot8.jpg',
-            date: new Date('2024-10-20').toISOString(), // Октябрь
+            date: new Date('2024-10-20').toISOString(),
             private: false
         }
     ];
@@ -193,31 +283,9 @@ function renderCards() {
     const savedScreenshots = getScreenshots();
     const publicSaved = savedScreenshots.filter(it => !it.private);
     
-    // Объединяем локальные изображения с сохранёнными и сортируем по дате (новые сначала)
+    // Объединяем локальные изображения с сохранёнными и сортируем по дате
     const allImages = [...localImages, ...publicSaved]
         .sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    // Если нет изображений вообще - показываем заглушки
-    if (allImages.length === 0) {
-        const monthCards = document.createElement('div');
-        monthCards.className = 'month-cards';
-        
-        for (let i = 0; i < 6; i++) {
-            const node = cardTemplate.content.cloneNode(true);
-            const link = node.querySelector('.card-thumb');
-            const img = node.querySelector('img');
-            img.src = `https://picsum.photos/seed/${i + 100}/800/600`;
-            img.alt = 'Пример скриншота';
-            link.href = '#';
-            node.querySelector('.card-date').textContent = new Date(Date.now() - i * 86400000).toLocaleDateString('ru-RU');
-            monthCards.appendChild(node);
-        }
-        gallery.appendChild(monthCards);
-        
-        // Скрываем кнопку "Показать ещё"
-        if (loadMoreBtn) loadMoreBtn.style.display = 'none';
-        return;
-    }
 
     // Получаем данные для текущей страницы
     const paginatedImages = getPaginatedScreenshots(allImages, currentPage, ITEMS_PER_PAGE);
@@ -225,13 +293,55 @@ function renderCards() {
     // Группируем по месяцам только отображаемые изображения
     const groupedByMonth = groupScreenshotsByMonth(paginatedImages);
 
+    const monthKeys = Object.keys(groupedByMonth);
+    let isFirstMonth = true;
+
     // Отображаем по месяцам
-    Object.keys(groupedByMonth).forEach(monthKey => {
-        // Добавляем заголовок месяца
-        const monthHeader = document.createElement('div');
-        monthHeader.className = 'month-header';
-        monthHeader.textContent = formatMonthHeader(monthKey);
-        gallery.appendChild(monthHeader);
+    monthKeys.forEach(monthKey => {
+        const monthContainer = document.createElement('div');
+        monthContainer.className = 'month-container';
+        
+        // Для первого месяца добавляем контейнер с заголовком и кнопкой
+        if (isFirstMonth) {
+            const monthHeaderContainer = document.createElement('div');
+            monthHeaderContainer.className = 'month-header-container';
+            
+            // Заголовок месяца
+            const monthHeader = document.createElement('div');
+            monthHeader.className = 'month-header';
+            monthHeader.textContent = formatMonthHeader(monthKey);
+            
+            // Действия (кнопка добавления)
+            const monthActions = document.createElement('div');
+            monthActions.className = 'month-header-actions';
+            
+            const monthAddBtn = document.createElement('a');
+            monthAddBtn.className = 'month-add-btn btn-primary';
+            monthAddBtn.href = 'add.html';
+            monthAddBtn.innerHTML = '<span class="btn-text" style="display: flex; align-items: center; gap: 0;"><span style="margin-right: 8px;">┿</span>Добавить скриншот</span>'; 
+            
+            // Добавляем обработчик для проверки авторизации
+            monthAddBtn.addEventListener('click', function(e) {
+                const currentUser = getCurrentUser();
+                if (!currentUser) {
+                    e.preventDefault();
+                    openModal('login');
+                }
+            });
+            
+            monthActions.appendChild(monthAddBtn);
+            monthHeaderContainer.appendChild(monthHeader);
+            monthHeaderContainer.appendChild(monthActions);
+            
+            monthContainer.appendChild(monthHeaderContainer);
+            isFirstMonth = false;
+        } else {
+            // Для остальных месяцев - только заголовок
+            const monthHeader = document.createElement('div');
+            monthHeader.className = 'month-header';
+            monthHeader.textContent = formatMonthHeader(monthKey);
+            monthContainer.appendChild(monthHeader);
+        }
 
         // Создаем контейнер для карточек этого месяца
         const monthCards = document.createElement('div');
@@ -242,11 +352,13 @@ function renderCards() {
             const node = cardTemplate.content.cloneNode(true);
             const link = node.querySelector('.card-thumb');
             const img = node.querySelector('img');
+            const dateElement = node.querySelector('.card-date'); // НАХОДИМ ЭЛЕМЕНТ ДАТЫ
 
-            // Устанавливаем правильные ссылки для карточек
-            link.href = `view.html?id=${encodeURIComponent(item.id)}`;
+            link.href = "#"; // Или просто оставь решетку
+            link.onclick = function(e) {
+                e.preventDefault(); // Блокируем переход
+            };
             
-            // Определяем источник изображения
             if (item.dataUrl && item.dataUrl.startsWith('data:image')) {
                 img.src = item.dataUrl;
             } else if (item.url) {
@@ -257,15 +369,94 @@ function renderCards() {
 
             img.alt = item.filename || 'screenshot';
             
-            // Обновляем дату (уже внутри изображения)
-            const dateElement = node.querySelector('.card-date');
-            dateElement.textContent = new Date(item.date).toLocaleDateString('ru-RU');
+            // Устанавливаем дату СРАЗУ в правильном формате
+            const itemDate = new Date(item.date);
+            if (window.innerWidth <= 768) {
+                dateElement.textContent = `${itemDate.getDate()} ${getMonthName(itemDate.getMonth())}`; // "31 декабря"
+            } else {
+                dateElement.textContent = `Добавлено ${itemDate.getDate()} ${getMonthName(itemDate.getMonth())}`; // "Добавлено 31 декабря"
+            }
+            
+            // Сохраняем оригинальную дату для обновления при ресайзе
+            dateElement.setAttribute('data-original-date', item.date);
             
             monthCards.appendChild(node);
         });
 
-        gallery.appendChild(monthCards);
+        monthContainer.appendChild(monthCards);
+        gallery.appendChild(monthContainer);
     });
+
+    // Если нет изображений вообще - показываем заглушки с кнопкой
+    if (monthKeys.length === 0) {
+        const monthContainer = document.createElement('div');
+        monthContainer.className = 'month-container';
+        
+        // Контейнер с заголовком и кнопкой
+        const monthHeaderContainer = document.createElement('div');
+        monthHeaderContainer.className = 'month-header-container';
+        
+        const monthHeader = document.createElement('div');
+        monthHeader.className = 'month-header';
+        monthHeader.textContent = 'Январь, 2025';
+        
+        const monthActions = document.createElement('div');
+        monthActions.className = 'month-header-actions';
+        
+        const monthAddBtn = document.createElement('a');
+        monthAddBtn.className = 'month-add-btn btn-primary';
+        monthAddBtn.href = 'add.html';
+        monthAddBtn.innerHTML = '<span class="btn-text" style="display: flex; align-items: center; gap: 10px;"><span style="margin-right: 20px;">┿</span>Добавить скриншот</span>';
+        
+        monthAddBtn.addEventListener('click', function(e) {
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                e.preventDefault();
+                openModal('login');
+            }
+        });
+        
+        monthActions.appendChild(monthAddBtn);
+        monthHeaderContainer.appendChild(monthHeader);
+        monthHeaderContainer.appendChild(monthActions);
+        
+        monthContainer.appendChild(monthHeaderContainer);
+        
+        // Пустые карточки
+        const monthCards = document.createElement('div');
+        monthCards.className = 'month-cards';
+        
+        for (let i = 0; i < 6; i++) {
+            const node = cardTemplate.content.cloneNode(true);
+            const link = node.querySelector('.card-thumb');
+            const img = node.querySelector('img');
+            const dateElement = node.querySelector('.card-date'); // НАХОДИМ ЭЛЕМЕНТ ДАТЫ
+            
+            img.src = `https://picsum.photos/seed/${i + 100}/800/600`;
+            img.alt = 'Пример скриншота';
+            link.href = '#';
+            
+            const fakeDate = new Date(Date.now() - i * 86400000);
+            if (window.innerWidth <= 768) {
+                dateElement.textContent = `${fakeDate.getDate()} ${getMonthName(fakeDate.getMonth())}`; // "31 декабря"
+            } else {
+                dateElement.textContent = `Добавлено ${fakeDate.getDate()} ${getMonthName(fakeDate.getMonth())}`; // "Добавлено 31 декабря"
+            }
+            
+            monthCards.appendChild(node);
+        }
+        
+        monthContainer.appendChild(monthCards);
+        gallery.appendChild(monthContainer);
+    }
+
+    // Удаляем неправильный код отсюда - он не нужен!
+    // document.querySelectorAll('.card-date').forEach((dateElement, index) => {
+    //     const item = allImages[index];
+    //     if (item) {
+    //         dateElement.setAttribute('data-original-date', item.date);
+    //     }
+    // });
 
     // Управление кнопкой "Показать ещё"
     if (loadMoreBtn) {
@@ -273,15 +464,59 @@ function renderCards() {
         const displayedItems = paginatedImages.length;
         
         if (displayedItems >= totalItems) {
-            // Все элементы показаны, скрываем кнопку
             loadMoreBtn.style.display = 'none';
         } else {
-            // Есть еще элементы, показываем кнопку
             loadMoreBtn.style.display = 'block';
             loadMoreBtn.textContent = `Показать ещё`;
         }
     }
-}   
+    
+    // Применяем адаптацию для мобильных
+    applyMobileAdaptation();
+}
+
+// Добавьте эту вспомогательную функцию
+function getMonthName(monthIndex) {
+    const monthNames = [
+        'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+        'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+    ];
+    return monthNames[monthIndex];
+}
+
+// И добавьте обработчик изменения размера окна
+window.addEventListener('resize', function() {
+    document.querySelectorAll('.card-date').forEach(dateElement => {
+        const originalDate = dateElement.getAttribute('data-original-date');
+        if (originalDate) {
+            const date = new Date(originalDate);
+            if (window.innerWidth <= 768) {
+                dateElement.textContent = `${date.getDate()} ${getMonthName(date.getMonth())}`;
+            } else {
+                dateElement.textContent = `Добавлено ${date.getDate()} ${getMonthName(date.getMonth())}`;
+            }
+        }
+    });
+});
+
+// Функция для форматирования даты под карточкой с учетом разрешения
+function formatDateForCard(date) {
+    const monthNames = [
+        'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+        'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+    ];
+    
+    const day = date.getDate();
+    const month = monthNames[date.getMonth()];
+    
+    // Проверяем ширину экрана для определения формата
+    if (window.innerWidth <= 768) {
+        return `${day} ${month}`; // Для 320-768px: "31 декабря"
+    } else {
+        return `Добавлено ${day} ${month}`; // Для 768-1920px: "Добавлено 31 декабря"
+    }
+}
+
 
 // Функция для загрузки дополнительных элементов
 function loadMoreItems() {
@@ -399,7 +634,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (user) {
                 setCurrentUser(user);
-                alert('Успешный вход!');
                 closeModal();
                 updateHeaderAuth();
             } else {
@@ -450,8 +684,6 @@ document.addEventListener('DOMContentLoaded', () => {
             users.push(newUser);
             localStorage.setItem('ss_users', JSON.stringify(users));
             setCurrentUser(newUser);
-            
-            alert('Регистрация прошла успешно!');
             closeModal();
             updateHeaderAuth();
         });
