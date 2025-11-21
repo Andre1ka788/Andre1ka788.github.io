@@ -6,180 +6,295 @@
   <title>Просмотр скриншота — ScreenshotShare</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    .view-container {
-      max-width: 800px;
-      margin: 40px auto;
-      background: var(--card);
-      border-radius: 12px;
-      padding: 30px;
-      border: 1px solid #e0e0e0;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    }
-    
-    .view-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-    
-    .view-title {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #645959;
-    }
-    
-    .view-subtitle {
-      color: var(--muted);
-      margin-bottom: 24px;
-      font-size: 14px;
-    }
-    
-    .view-image {
-      text-align: center;
-      margin: 24px 0;
-    }
-    
-    .view-image img {
-      max-width: 100%;
-      max-height: 600px;
-      border-radius: 8px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-    }
-    
-    .view-meta {
-      color: var(--muted);
-      margin: 20px 0;
-      font-size: 14px;
-      text-align: center;
-    }
-    
-    .view-actions {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      margin-top: 24px;
-    }
+.view-container {
+  max-width: none;
+  width: 100%;
+  margin: 40px 0;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 30px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+}
 
-    .error-message {
-      text-align: center;
-      color: #ff4444;
-      padding: 40px;
-      font-size: 18px;
-    }
+.view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
 
-    /* Стили для синей кнопки */
-    .btn-primary {
-      background: #3b82f6;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-weight: 500;
-      text-decoration: none;
-      display: inline-block;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
+.view-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #777676;
+}
 
-    .btn-primary:hover {
-      background: #2563eb;
-      color: white;
-      text-decoration: none;
-    }
+.view-header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
 
-    /* Адаптивность для мобильных устройств */
-    @media (max-width: 768px) {
-      .view-container {
-        margin: 20px auto;
-        padding: 20px;
-      }
-      
-      .view-title {
-        font-size: 20px;
-        text-align: center;
-      }
-      
-      .view-image {
-        margin: 20px 0;
-      }
-      
-      .view-image img {
-        max-height: 50vh;
-      }
-      
-      .view-meta {
-        font-size: 13px;
-        margin: 16px 0;
-      }
-      
-      .view-actions {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        margin-top: 20px;
-      }
-      
-      .view-actions .btn,
-      .view-actions .btn-primary {
-        width: 100%;
-        max-width: 200px;
-        text-align: center;
-        justify-content: center;
-      }
-      
-      .error-message {
-        padding: 30px 20px;
-        font-size: 16px;
-      }
-    }
+.btn-back {
+  background: transparent;
+  border: 3px solid #369FFF;
+  color: #369FFF;
+  border-radius: 8px;
+  padding: 18px 20px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
-    @media (max-width: 480px) {
-      .view-container {
-        margin: 10px auto;
-        padding: 16px;
-        border-radius: 8px;
-      }
-      
-      .view-title {
-        font-size: 18px;
-      }
-      
-      .view-image img {
-        max-height: 40vh;
-      }
-      
-      .view-meta {
-        font-size: 12px;
-      }
-      
-      .view-actions .btn,
-      .view-actions .btn-primary {
-        max-width: 100%;
-        padding: 12px 16px;
-      }
-    }
+.btn-back:hover {
+  background: #3b82f6;
+  color: white;
+}
+    
+.view-subtitle {
+  color: var(--muted);
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+    
+.view-image {
+  text-align: center;
+  margin: 24px 0;
+  width: 100%;
+}
+    
+.view-image img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  display: block;
+}
+    
+.view-meta {
+  color: var(--muted);
+  margin: 20px 0;
+  font-size: 14px;
+  text-align: center;
+}
+    
+.view-actions {
+  display: none;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+}
 
-    /* Ландшафтная ориентация для мобилок */
-    @media (max-width: 768px) and (orientation: landscape) {
-      .view-image img {
-        max-height: 60vh;
-      }
-      
-      .view-actions {
-        flex-direction: row;
-        flex-wrap: wrap;
-      }
-      
-      .view-actions .btn,
-      .view-actions .btn-primary {
-        flex: 1;
-        min-width: 140px;
-      }
-    }
+.error-message {
+  text-align: center;
+  color: #ff4444;
+  padding: 40px;
+  font-size: 18px;
+}
+
+.btn-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #369FFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 20px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-copy:hover {
+  background: #2563eb;
+}
+
+.btn-copy svg {
+  flex-shrink: 0;
+}
+
+.copy-icon {
+  width: 16px;
+  height: 16px;
+  background-image: url('images/z.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .view-container {
+    margin: 20px auto;
+    padding: 20px;
+  }
+  
+  .view-title {
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  .view-image {
+    margin: 20px 0;
+  }
+  
+  .view-image img {
+    max-height: 50vh;
+  }
+  
+  .view-meta {
+    font-size: 13px;
+    margin: 16px 0;
+  }
+  
+  /* Скрываем кнопки в хедере на мобильных */
+  .view-header-actions {
+    display: none;
+  }
+  
+  /* Показываем кнопки под скриншотом */
+  .view-actions {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .view-actions .btn-copy,
+  .view-actions .btn-back {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    padding: 16px 20px;
+  }
+  
+  .error-message {
+    padding: 30px 20px;
+    font-size: 16px;
+  }
+
+  /* Скрываем текст "Скриншоты" в логотипе на мобильных */
+  .logo span,
+  .logo-text {
+    display: none !important;
+  }
+  
+  /* Настраиваем контейнер логотипа */
+  .logo {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    min-width: 40px;
+  }
+  
+  /* Настраиваем иконку */
+  .logo-icon {
+    width: 34px !important;
+    height: 34px !important;
+    margin: 0 !important;
+    flex-shrink: 0;
+  }
+
+  /* Скрываем приветствие */
+  #user-greeting {
+    display: none !important;
+  }
+
+  /* Настройка кнопки выхода */
+  #logout-btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  /* Шапка для мобильных */
+  .view-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .view-container {
+    margin: 10px auto;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .view-title {
+    font-size: 13px;
+  }
+  
+  .view-image img {
+    max-height: 40vh;
+  }
+  
+  .view-meta {
+    font-size: 12px;
+  }
+  
+  .view-actions .btn-copy,
+  .view-actions .btn-back {
+    max-width: 100%;
+    padding: 12px 16px;
+  }
+
+  #logout-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+/* Ландшафтная ориентация для мобилок */
+@media (max-width: 768px) and (orientation: landscape) {
+  .view-image img {
+    max-height: 60vh;
+  }
+  
+  .view-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .view-actions .btn-copy,
+  .view-actions .btn-back {
+    flex: 1;
+    min-width: 140px;
+  }
+}
+
+/* Для очень маленьких окон */
+@media (max-width: 320px) {
+  .view-container {
+    margin: 5px auto;
+    padding: 12px;
+    border-radius: 6px;
+  }
+  
+  .view-title {
+    font-size: 12px;
+  }
+  
+  .view-image img {
+    max-height: 35vh;
+  }
+  
+  .view-meta {
+    font-size: 11px;
+  }
+  
+  .btn-copy,
+  .btn-back {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
   </style>
 </head>
 <body>
@@ -187,33 +302,55 @@
     <div class="container header-inner">
       <div class="logo">
         <img src="images/icon.jpg" alt="" class="logo-icon">
-        Скриншоты
+        <span class="logo-text">Скриншоты</span>
       </div>
       <nav>
-        <a href="index.html" class="btn btn-outline">На главную</a>
+        <div class="user-info">
+          <span id="user-greeting">Здравствуйте!</span>
+          <button class="btn btn-outline2" style="padding: 6px 12px; font-size: 12px;" id="logout-btn">Выход</button>
+        </div>
       </nav>
     </div>
   </header>
 
   <main class="container">
     <div class="view-container">
-      <h2 class="view-title">Просмотр скриншота</h2>
+      <div class="view-header">
+        <h2 class="view-title" id="view-title"></h2>
+        <div class="view-header-actions">
+          <button class="btn-copy" id="btn-copy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+            </svg>
+            Скопировать ссылку
+          </button>
+          <button class="btn-back" onclick="history.back()"> < Назад </button>
+        </div>
+      </div>
       
       <div id="view-area" class="view-image">
-        <!-- изображение будет здесь -->
       </div>
       
       <div id="view-meta" class="view-meta"></div>
       
-      <div id="view-actions" class="view-actions">
-        <!-- кнопки действий будут здесь -->
+      <div class="view-actions">
+        <button class="btn-copy mobile-copy">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+          </svg>
+          Скопировать ссылку
+        </button>
+        <button class="btn-back mobile-back"> < Назад </button>
       </div>
     </div>
   </main>
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <div>© 2025 Скриншоты</div>
+      <div>info@gmail.com</div>
+      <div class="socials">
+        <a>Информация о разработчике</a>
+      </div>
     </div>
   </footer>
 
@@ -228,7 +365,6 @@
         }
       }
 
-      // Все локальные изображения (должны совпадать с script.js)
       const localImages = [
         {
           id: 'local-1',
@@ -291,14 +427,12 @@
       function findById(id) {
         console.log('Ищем скриншот с ID:', id);
         
-        // Сначала ищем в локальных изображениях
         const local = localImages.find(it => it.id === id);
         if (local) {
           console.log('Найден локальный скриншот:', local);
           return local;
         }
         
-        // Затем в сохранённых скриншотах
         const arr = getScreenshots();
         const saved = arr.find(it => it.id === id);
         if (saved) {
@@ -310,12 +444,24 @@
         return null;
       }
 
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        const months = [
+          'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+          'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+        ];
+        const day = date.getDate();
+        const month = months[date.getMonth()];
+        const year = date.getFullYear();
+        
+        return `Добавлено ${day} ${month}`;
+      }
+
       const params = new URLSearchParams(window.location.search);
       let id = params.get('id');
 
       console.log('ID из URL:', id);
 
-      // Если id не передан — покажем последний элемент (если есть)
       if (!id) {
         const allItems = [...localImages, ...getScreenshots()];
         if (allItems.length) {
@@ -326,7 +472,10 @@
 
       const viewArea = document.getElementById('view-area');
       const viewMeta = document.getElementById('view-meta');
-      const viewActions = document.getElementById('view-actions');
+      const viewTitle = document.getElementById('view-title');
+      const btnCopy = document.getElementById('btn-copy');
+      const mobileCopyBtn = document.querySelector('.mobile-copy');
+      const mobileBackBtn = document.querySelector('.mobile-back');
 
       if (!id) {
         viewArea.innerHTML = '<div class="error-message">Скриншот не найден. ID не указан.</div>';
@@ -339,10 +488,10 @@
         return;
       }
 
-      // Показ изображения
+      viewTitle.textContent = formatDate(item.date);
+
       const img = document.createElement('img');
       
-      // Определяем источник изображения
       if (item.dataUrl && item.dataUrl.startsWith('data:image')) {
         img.src = item.dataUrl;
       } else if (item.url) {
@@ -358,34 +507,16 @@
       
       viewArea.appendChild(img);
 
-      // Мета информация
-      const dateText = new Date(item.date).toLocaleString('ru-RU');
-      let metaText = `Загружено: ${dateText}`;
-      if (item.filename) {
-        metaText += ` • ${item.filename}`;
-      }
-      if (item.private) {
-        metaText += ' • Только по ссылке';
-      }
-      viewMeta.textContent = metaText;
+      const dateText = formatDate(item.date);
+      let metaText = dateText;
 
-      // Действия
-      const btnDownload = document.createElement('a');
-      btnDownload.className = 'btn btn-outline';
-      btnDownload.textContent = 'Скачать';
-      btnDownload.href = item.dataUrl || item.url;
-      btnDownload.download = item.filename || 'screenshot.png';
-
-      const btnCopy = document.createElement('button');
-      btnCopy.className = 'btn-primary';
-      btnCopy.textContent = 'Скопировать ссылку';
+      // Обработчики для десктопных кнопок
       btnCopy.addEventListener('click', async () => {
         const url = window.location.href;
         try {
           await navigator.clipboard.writeText(url);
           alert('Ссылка скопирована в буфер обмена');
         } catch (e) {
-          // Fallback для браузеров без поддержки clipboard API
           const textArea = document.createElement('textarea');
           textArea.value = url;
           document.body.appendChild(textArea);
@@ -400,10 +531,66 @@
         }
       });
 
-      viewActions.appendChild(btnDownload);
-      viewActions.appendChild(btnCopy);
+      // Обработчики для мобильных кнопок
+      mobileCopyBtn.addEventListener('click', async () => {
+        const url = window.location.href;
+        try {
+          await navigator.clipboard.writeText(url);
+          alert('Ссылка скопирована в буфер обмена');
+        } catch (e) {
+          const textArea = document.createElement('textarea');
+          textArea.value = url;
+          document.body.appendChild(textArea);
+          textArea.select();
+          try {
+            document.execCommand('copy');
+            alert('Ссылка скопирована в буфер обмена');
+          } catch (err) {
+            prompt('Скопируйте ссылку вручную:', url);
+          }
+          document.body.removeChild(textArea);
+        }
+      });
+
+      mobileBackBtn.addEventListener('click', () => {
+        history.back();
+      });
 
     })();
   </script>
+  
+  <script>
+// Функции для работы с пользователями
+function getCurrentUser() {
+    try {
+        const user = localStorage.getItem('ss_current_user');
+        return user ? JSON.parse(user) : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function logout() {
+    localStorage.removeItem('ss_current_user');
+    window.location.href = 'index.html';
+}
+
+// Проверка авторизации и настройка кнопки выхода
+const currentUser = getCurrentUser();
+const userGreeting = document.getElementById('user-greeting');
+const logoutBtn = document.getElementById('logout-btn');
+
+if (currentUser) {
+    userGreeting.textContent = `Здравствуйте, ${currentUser.username}`;
+} else {
+    // Если пользователь не авторизован, перенаправляем на главную
+    window.location.href = 'index.html';
+}
+
+// Обработчик кнопки выхода
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', logout);
+}
+</script>
 </body>
 </html>
