@@ -9,10 +9,10 @@
 <body>
 <header class="site-header">
     <div class="container header-inner">
-        <div class="logo">
-            <img src="images/icon.jpg" alt="" class="logo-icon">
-            Скриншоты
-        </div>
+<div class="logo">
+    <img src="images/icon.jpg" alt="" class="logo-icon">
+    <span>Скриншоты</span>
+</div>
         <nav>
             <button id="btn-register" class="btn btn-ghost">Регистрация</button>
             <button id="btn-login" class="btn">Вход</button>
@@ -21,10 +21,9 @@
 </header>
 
 <main class="container">
-    <!-- Кнопка добавить под шапкой -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin: -22px 0;">
         <h1 class="page-title"> </h1>
-        <a id="btn-add" class="btn btn-primary" href="add.html">+Добавить скриншот</a>
     </div>
 
     <section id="gallery" class="gallery"></section>
@@ -33,27 +32,26 @@
     </div>
 </main>
 
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <div>© 2025 Скриншоты</div>
-      <div class="socials">
-        <a href="#">vk</a>
-        <a href="#">tg</a>
-      </div>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-email">info@gmail.com</div>
+    <div class="socials">
+      <a class="footer-dev-info">Информация о разработчике</a>
     </div>
-  </footer>
+  </div>
+</footer>
 
-  <!-- Шаблон карточки -->
-  <template id="card-template">
-    <article class="card">
-      <a class="card-thumb" href="#">
-        <img src="" alt="screenshot" />
-      </a>
-      <div class="card-meta">
-        <time class="card-date"></time>
-      </div>
-    </article>
-  </template>
+<!-- Шаблон карточки -->
+<template id="card-template">
+  <article class="card">
+    <a class="card-thumb" href="#">
+      <img src="" alt="screenshot" />
+    </a>
+    <div class="card-meta">
+      <time class="card-date"></time>
+    </div>
+  </article>
+</template>
 
   <!-- Модалка входа / регистрации -->
 <div id="modal" class="modal" aria-hidden="true">
@@ -89,29 +87,31 @@
 
 <!-- Форма РЕГИСТРАЦИИ -->
 <form id="form-register" class="form">
-  <div class="form-row">
+  <!-- ИМЯ на всю ширину -->
+  <div class="form-row-full">
     <div class="input-group">
-      <input type="text" name="username" required pattern="[A-Za-zА-Яа-яЁё0-9_\- ]+" placeholder="Ваше имя" />
+      <input type="text" name="username" required placeholder="Ваше имя" />
     </div>
-    
+  </div>
+  
+  <!-- Остальные поля в две колонки -->
+  <div class="form-row">
     <div class="input-group">
       <input type="email" name="email" required placeholder="Email" />
     </div>
+    
+    <div class="input-group">
+      <input type="tel" name="phone" required placeholder="Мобильный телефон" />
+    </div>
   </div>
   
   <div class="form-row">
     <div class="input-group">
-      <input type="tel" name="phone" required pattern="^\+?[0-9\s\-\(\)]{10,15}$" placeholder="Мобильный телефон" />
+      <input type="password" name="password" required placeholder="Пароль" />
     </div>
     
     <div class="input-group">
-      <input type="password" name="password" required minlength="6" placeholder="Пароль" />
-    </div>
-  </div>
-  
-  <div class="form-row">
-    <div class="input-group">
-      <input type="password" name="confirm" required minlength="6" placeholder="Повторите пароль" />
+      <input type="password" name="confirm" required placeholder="Повторите пароль" />
     </div>
   </div>
 
